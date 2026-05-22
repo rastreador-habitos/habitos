@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctruture.entity;
+package com.lucasmanoel.habitos.infrasctructure.entity;
 
 
 import lombok.AllArgsConstructor;

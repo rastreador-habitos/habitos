@@ -1,11 +1,10 @@
-package com.lucasmanoel.habitos.infrasctruture.entity;
+package com.lucasmanoel.habitos.infrasctructure.entity;
 
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

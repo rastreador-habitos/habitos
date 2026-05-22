@@ -1,42 +1,37 @@
 package com.lucasmanoel.habitos.business;
 
 import com.lucasmanoel.habitos.business.dto.CheckinDTORecords;
-import com.lucasmanoel.habitos.business.dto.habitosDTORecords;
+import com.lucasmanoel.habitos.business.dto.HabitosDTORecords;
 import com.lucasmanoel.habitos.business.mapper.HabitosConverter;
 import com.lucasmanoel.habitos.business.mapper.HabitosUpdateConverter;
-import com.lucasmanoel.habitos.infrasctruture.entity.CheckinEntity;
-import com.lucasmanoel.habitos.infrasctruture.entity.HabitosEntity;
-import com.lucasmanoel.habitos.infrasctruture.exceptions.ConflictException;
-import com.lucasmanoel.habitos.infrasctruture.exceptions.ResourceNotFoundException;
-import com.lucasmanoel.habitos.infrasctruture.exceptions.UnauthorizedException;
-import com.lucasmanoel.habitos.infrasctruture.repository.CheckinRepository;
-import com.lucasmanoel.habitos.infrasctruture.repository.HabitosRepository;
-import com.lucasmanoel.habitos.infrasctruture.security.JwtUtil;
+import com.lucasmanoel.habitos.infrasctructure.entity.CheckinEntity;
+import com.lucasmanoel.habitos.infrasctructure.entity.HabitosEntity;
+import com.lucasmanoel.habitos.infrasctructure.exceptions.ConflictException;
+import com.lucasmanoel.habitos.infrasctructure.exceptions.ResourceNotFoundException;
+import com.lucasmanoel.habitos.infrasctructure.exceptions.UnauthorizedException;
+import com.lucasmanoel.habitos.infrasctructure.repository.CheckinRepository;
+import com.lucasmanoel.habitos.infrasctructure.repository.HabitosRepository;
+import com.lucasmanoel.habitos.infrasctructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class HabitosService {
+    String idNaoencontrado = "Id não encontrado";
+    String naoAutenticado = "Usuario não autenticado";
     private final JwtUtil jwtUtil;
     private  final HabitosConverter habitosConverter;
     private  final HabitosUpdateConverter habitosUpdateConverter;
     private  final HabitosRepository habitosRepository;
     private  final CheckinRepository checkinRepository;
 
-    public habitosDTORecords cadastroHabito(String token, habitosDTORecords dto){
+    public HabitosDTORecords cadastroHabito(String token, HabitosDTORecords dto){
         String email = jwtUtil.extrairEmailToken(token.substring(7));
         HabitosEntity entity = HabitosEntity.builder()
                 .nome(dto.nome())
@@ -48,7 +43,7 @@ public class HabitosService {
 
         return habitosConverter.paraHabitosDTO(habitosRepository.save(entity));
     }
-    public void alterarStatusHabito(@RequestHeader("Authorization") String token, @PathVariable String id, @RequestParam boolean ativo){
+    public void alterarStatusHabito(String token, String id, boolean ativo){
         if (ativo){
             ativaHabito(token, id);
         }else {
@@ -59,10 +54,10 @@ public class HabitosService {
     public void desativaHabito(String token,String id){
 
         HabitosEntity entity = habitosRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         if(!entity.getAtivo()){
             throw new ConflictException("Hábito já desativado");
@@ -72,10 +67,10 @@ public class HabitosService {
     }
     public void ativaHabito(String token,String id){
         HabitosEntity entity = habitosRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         if(entity.getAtivo()){
             throw new ConflictException("Hábito já ativado");
@@ -86,21 +81,21 @@ public class HabitosService {
 
     public void deletaHabito(String token, String id){
         HabitosEntity entity = habitosRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         habitosRepository.deleteById(id);
+        checkinRepository.deleteByHabitosID(id);
 
     }
-
-    public habitosDTORecords alteraHabito(String token, habitosDTORecords dto, String id){
+    public HabitosDTORecords alteraHabito(String token, HabitosDTORecords dto, String id){
         HabitosEntity entity = habitosRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         if (!entity.getAtivo()){
             throw new ConflictException("Hábito inativo");
@@ -111,10 +106,10 @@ public class HabitosService {
 
     public int efetuarCheckin(String token, String id){
         HabitosEntity entity = habitosRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         if (!entity.getAtivo()){
             throw new ConflictException("Hábito desativado!");
@@ -127,19 +122,19 @@ public class HabitosService {
                 .data(LocalDate.now())
                 .build();
         checkinRepository.save(checkin);
-        return calcularStreak(token ,entity.getHabitosID());
+        return calcularStreakInterno(entity.getHabitosID());
     }
 
     public List<CheckinDTORecords> historicoCheckin(String token, String habitoId){
         HabitosEntity entity = habitosRepository.findById(habitoId).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         LocalDate data = LocalDate.now().minusDays(30);
         List<CheckinEntity> checkins = checkinRepository.findByHabitosIDAndDataAfter(habitoId, data);
-        if (checkins.stream().map(c -> new CheckinDTORecords(c.getData())).toList().isEmpty()){
+        if (checkins.isEmpty()){
             throw new ResourceNotFoundException("Você ainda não fez check-in nesse hábito");
         }
         return checkins.stream().map(c -> new CheckinDTORecords(c.getData())).toList();
@@ -147,10 +142,10 @@ public class HabitosService {
 
     public int calcularStreak(String token, String habitoId){
         HabitosEntity entity = habitosRepository.findById(habitoId).orElseThrow(
-                () -> new ResourceNotFoundException("Id não encontrado")
+                () -> new ResourceNotFoundException(idNaoencontrado)
         );
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())){
-            throw new UnauthorizedException("Usuario não autenticado");
+            throw new UnauthorizedException(naoAutenticado);
         }
         List<CheckinEntity> buscarLista = checkinRepository.findByHabitosID(habitoId);
         buscarLista.sort(Comparator.comparing(CheckinEntity::getData).reversed());
@@ -168,4 +163,22 @@ public class HabitosService {
         }
         return streak;
    }
+    private int calcularStreakInterno(String habitoId){
+
+        List<CheckinEntity> buscarLista = checkinRepository.findByHabitosID(habitoId);
+        buscarLista.sort(Comparator.comparing(CheckinEntity::getData).reversed());
+
+        LocalDate dataEsperada = LocalDate.now();
+        int streak = 0;
+
+        for (CheckinEntity checkin : buscarLista){
+            if (checkin.getData().equals(dataEsperada)){
+                streak++;
+                dataEsperada = dataEsperada.minusDays(1);
+            }else if (checkin.getData().isBefore(dataEsperada)){
+                break;
+            }
+        }
+        return streak;
+    }
 }

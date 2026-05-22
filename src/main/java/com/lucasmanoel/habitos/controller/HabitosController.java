@@ -2,7 +2,7 @@ package com.lucasmanoel.habitos.controller;
 
 import com.lucasmanoel.habitos.business.HabitosService;
 import com.lucasmanoel.habitos.business.dto.CheckinDTORecords;
-import com.lucasmanoel.habitos.business.dto.habitosDTORecords;
+import com.lucasmanoel.habitos.business.dto.HabitosDTORecords;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,7 +28,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<habitosDTORecords> cadastroHabito(@RequestHeader("Authorization") String token, @Valid @RequestBody habitosDTORecords dto){
+    public ResponseEntity<HabitosDTORecords> cadastroHabito(@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto){
         return ResponseEntity.status(HttpStatus.CREATED).body((habitosService.cadastroHabito(token, dto)));
     }
 
@@ -63,7 +63,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<habitosDTORecords> alteraHabito (@RequestHeader("Authorization") String token,@Valid @RequestBody habitosDTORecords dto,
+    public ResponseEntity<HabitosDTORecords> alteraHabito (@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto,
                                                            @PathVariable String id){
         return ResponseEntity.ok(habitosService.alteraHabito(token, dto, id));
     }
