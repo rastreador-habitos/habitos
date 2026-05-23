@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctruture.exceptions;
+package com.lucasmanoel.habitos.infrasctructure.exceptions;
 
 public class ConflictException extends RuntimeException {
     public ConflictException(String message) {

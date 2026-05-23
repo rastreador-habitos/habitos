@@ -1,6 +1,6 @@
-package com.lucasmanoel.habitos.infrasctruture.repository;
+package com.lucasmanoel.habitos.infrasctructure.repository;
 
-import com.lucasmanoel.habitos.infrasctruture.entity.HabitosEntity;
+import com.lucasmanoel.habitos.infrasctructure.entity.HabitosEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

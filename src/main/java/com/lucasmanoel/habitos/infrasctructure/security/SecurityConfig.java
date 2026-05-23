@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctruture.security;
+package com.lucasmanoel.habitos.infrasctructure.security;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -48,7 +48,6 @@ public class SecurityConfig {
                         .permitAll()
                         .anyRequest().authenticated() // Requer autenticação para todas as outras requisições
                 )
-
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configura a política de sessão como stateless (sem sessão)
                 )

@@ -1,6 +1,6 @@
-package com.lucasmanoel.habitos.infrasctruture.repository;
+package com.lucasmanoel.habitos.infrasctructure.repository;
 
-import com.lucasmanoel.habitos.infrasctruture.entity.CheckinEntity;
+import com.lucasmanoel.habitos.infrasctructure.entity.CheckinEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +12,5 @@ public interface CheckinRepository extends MongoRepository<CheckinEntity, String
     List<CheckinEntity> findByHabitosIDAndDataAfter(String habitoId, LocalDate data);
     List<CheckinEntity> findByHabitosID(String habitoId);
     boolean existsByHabitosIDAndData(String habitoId, LocalDate data);
+    void deleteByHabitosID(String habitosID);
 }
