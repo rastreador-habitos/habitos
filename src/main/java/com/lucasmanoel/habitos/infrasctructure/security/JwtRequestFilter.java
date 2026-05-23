@@ -1,9 +1,11 @@
-package com.lucasmanoel.habitos.infrasctruture.security;
+package com.lucasmanoel.habitos.infrasctructure.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,20 +13,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// Define a classe JwtRequestFilter, que estende OncePerRequestFilter
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    // Define propriedades para armazenar instâncias de JwtUtil e UserDetailsService
+    // Declara o logger no topo da classe
+    private static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
+    // import org.slf4j.Logger e org.slf4j.LoggerFactory
+
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-    // Construtor que inicializa as propriedades com instâncias fornecidas
     public JwtRequestFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
-    // Metodo chamado uma vez por requisição para processar o filtro
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -46,8 +48,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Mostra o erro real no console
-            System.err.println("ERRO NO FILTRO JWT: " + e.getClass().getName() + " - " + e.getMessage());
+            // Loga o problema mas não interrompe — o Spring Security bloqueia depois se necessário
+            log.error("Erro na validação do token JWT: {}", e.getMessage());
         }
 
         chain.doFilter(request, response);
