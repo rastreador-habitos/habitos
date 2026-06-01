@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctructure.exceptions;
+package com.lucasmanoel.habitos.infrastructure.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String mensagem) {
