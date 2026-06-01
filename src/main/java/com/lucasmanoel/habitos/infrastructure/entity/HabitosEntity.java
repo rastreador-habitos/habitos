@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctructure.entity;
+package com.lucasmanoel.habitos.infrastructure.entity;
 
 
 import lombok.*;
