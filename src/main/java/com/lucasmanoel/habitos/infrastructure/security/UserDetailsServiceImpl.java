@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctructure.security;
+package com.lucasmanoel.habitos.infrastructure.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctructure.security;
+package com.lucasmanoel.habitos.infrastructure.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package com.lucasmanoel.habitos.infrasctructure.security;
+package com.lucasmanoel.habitos.infrastructure.security;
 
 
 import io.jsonwebtoken.Claims;

@@ -2,16 +2,16 @@ package com.lucasmanoel.habitos.business;
 
 import com.lucasmanoel.habitos.business.dto.CheckinDTORecords;
 import com.lucasmanoel.habitos.business.dto.HabitosDTORecords;
-import com.lucasmanoel.habitos.business.mapper.HabitosConverter;
-import com.lucasmanoel.habitos.business.mapper.HabitosUpdateConverter;
-import com.lucasmanoel.habitos.infrasctructure.entity.CheckinEntity;
-import com.lucasmanoel.habitos.infrasctructure.entity.HabitosEntity;
-import com.lucasmanoel.habitos.infrasctructure.exceptions.ConflictException;
-import com.lucasmanoel.habitos.infrasctructure.exceptions.ResourceNotFoundException;
-import com.lucasmanoel.habitos.infrasctructure.exceptions.UnauthorizedException;
-import com.lucasmanoel.habitos.infrasctructure.repository.CheckinRepository;
-import com.lucasmanoel.habitos.infrasctructure.repository.HabitosRepository;
-import com.lucasmanoel.habitos.infrasctructure.security.JwtUtil;
+import com.lucasmanoel.habitos.business.converter.HabitosConverter;
+import com.lucasmanoel.habitos.business.converter.HabitosUpdateConverter;
+import com.lucasmanoel.habitos.infrastructure.entity.CheckinEntity;
+import com.lucasmanoel.habitos.infrastructure.entity.HabitosEntity;
+import com.lucasmanoel.habitos.infrastructure.exceptions.ConflictException;
+import com.lucasmanoel.habitos.infrastructure.exceptions.ResourceNotFoundException;
+import com.lucasmanoel.habitos.infrastructure.exceptions.UnauthorizedException;
+import com.lucasmanoel.habitos.infrastructure.repository.CheckinRepository;
+import com.lucasmanoel.habitos.infrastructure.repository.HabitosRepository;
+import com.lucasmanoel.habitos.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
