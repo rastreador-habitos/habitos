@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class HabitosControllerTest {
+class HabitosControllerTest {
 
     @InjectMocks
     HabitosController habitosController;
@@ -35,9 +35,10 @@ public class HabitosControllerTest {
     MockMvc mockMvc;
     ObjectMapper objectMapper;
 
-    final String TOKEN = "Bearer token_de_teste_123";
+    final String token = "Bearer eyJhbGciOiJIUzI1NiJ9eyJzdWIiOiJAIiwiHVR";
+
     final String HABITO_ID = "abc123";
-    HabitosDTORecords habitoDTO;
+    String email = "lucas@gmail.com";
 
     @BeforeEach
     void setup() {
@@ -52,48 +53,48 @@ public class HabitosControllerTest {
     @Test
     void deveCadastrarHabitoERetornar201() throws Exception {
         HabitosDTORecords dto = new HabitosDTORecords("Beber água", "2 litros por dia");
-        when(habitosService.cadastroHabito(TOKEN, dto)).thenReturn(dto);
+        when(habitosService.cadastroHabito(token, dto)).thenReturn(dto);
 
         mockMvc.perform(post("/habitos")
-                        .header("Authorization", TOKEN)
+                        .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nome").value("Beber água"));
 
-        verify(habitosService).cadastroHabito(TOKEN, dto);
+        verify(habitosService).cadastroHabito(token, dto);
     }
 
     @Test
     void deveAlterarStatusHabitoERetornar200() throws Exception {
-        mockMvc.perform(patch("/habitos/{id}",HABITO_ID)
-                .header("Authorization", TOKEN)
-                .param("ativo", "true"))
+        mockMvc.perform(patch("/habitos/{id}", HABITO_ID)
+                        .header("Authorization", token)
+                        .param("ativo", "true"))
                 .andExpect(status().isOk());
 
-        verify(habitosService).alterarStatusHabito(TOKEN, HABITO_ID, true);
+        verify(habitosService).alterarStatusHabito(token, HABITO_ID, true);
     }
 
     @Test
     void deveDeletarHabitoERetonar204() throws Exception {
-        mockMvc.perform(delete("/habitos/{id}",HABITO_ID)
-                .header("Authorization", TOKEN))
+        mockMvc.perform(delete("/habitos/{id}", HABITO_ID)
+                        .header("Authorization", token))
                 .andExpect(status().isNoContent());
 
-        verify(habitosService).deletaHabito(TOKEN, HABITO_ID);
+        verify(habitosService).deletaHabito(token, HABITO_ID);
     }
 
     @Test
     void deveEfetuarCheckinERetornar200ComStreak() throws Exception {
-        when(habitosService.efetuarCheckin(TOKEN, HABITO_ID)).thenReturn(5);
+        when(habitosService.efetuarCheckin(token, HABITO_ID)).thenReturn(5);
 
         mockMvc.perform(post("/habitos/checkin")
-                .header("Authorization", TOKEN)
-                .param("id", HABITO_ID))
+                        .header("Authorization", token)
+                        .param("id", HABITO_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().string("5"));
 
-        verify(habitosService).efetuarCheckin(TOKEN, HABITO_ID);
+        verify(habitosService).efetuarCheckin(token, HABITO_ID);
     }
 
     @Test
@@ -102,14 +103,26 @@ public class HabitosControllerTest {
                 new CheckinDTORecords(LocalDate.now()),
                 new CheckinDTORecords(LocalDate.now().minusDays(1))
         );
-        when(habitosService.historicoCheckin(TOKEN, HABITO_ID)).thenReturn(historico);
+        when(habitosService.historicoCheckin(token, HABITO_ID)).thenReturn(historico);
 
         mockMvc.perform(get("/habitos")
-                        .header("Authorization", TOKEN)
+                        .header("Authorization", token)
                         .param("habitoId", HABITO_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
 
-        verify(habitosService).historicoCheckin(TOKEN, HABITO_ID);
+        verify(habitosService).historicoCheckin(token, HABITO_ID);
+    }
+
+    @Test
+    void deveBuscarListaHabitosERetornar200() throws Exception {
+
+        when(habitosService.buscaHabitosPorEmail(token)).thenReturn(List.of());
+
+        mockMvc.perform(get("/habitos/listar")
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+
+        verify(habitosService).buscaHabitosPorEmail(token);
     }
 }

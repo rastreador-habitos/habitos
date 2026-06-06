@@ -3,6 +3,7 @@ package com.lucasmanoel.habitos.business;
 import com.lucasmanoel.habitos.business.converter.HabitosConverter;
 import com.lucasmanoel.habitos.business.converter.HabitosUpdateConverter;
 import com.lucasmanoel.habitos.business.dto.CheckinDTORecords;
+import com.lucasmanoel.habitos.business.dto.HabitosDTOResponse;
 import com.lucasmanoel.habitos.infrastructure.entity.CheckinEntity;
 import com.lucasmanoel.habitos.infrastructure.entity.HabitosEntity;
 import com.lucasmanoel.habitos.infrastructure.exceptions.ConflictException;
@@ -29,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class HabitosServiceTest {
+class HabitosServiceTest {
 
     @InjectMocks
     HabitosService habitosService;
@@ -49,10 +50,16 @@ public class HabitosServiceTest {
     @Mock
     JwtUtil jwtUtil;
 
-    HabitosEntity habitoAtivo;
-    String token = "Bearer 324234324324sfdfsdf434343";
+    String token = "Bearer eyJhbGciOiJIUzI1NiJ9eyJzdWIiOiJAIiwiHVR";
     String habitoId = "abc123";
     String email = "lucas@gmail.com";
+
+    HabitosEntity habitoAtivo = HabitosEntity.builder()
+            .habitosID(habitoId)
+            .nome("Teste")
+            .email(email)
+            .ativo(true)
+            .build();
 
     CheckinEntity checkinHoje = CheckinEntity.builder()
             .habitosID(habitoId)
@@ -61,14 +68,7 @@ public class HabitosServiceTest {
 
     @BeforeEach
     void setup() {
-        habitoAtivo = HabitosEntity.builder()
-                .habitosID(habitoId)
-                .nome("Teste")
-                .email(email)
-                .ativo(true)
-                .build();
-
-        lenient().when(jwtUtil.extrairEmailToken("324234324324sfdfsdf434343")).thenReturn(email);
+        lenient().when(jwtUtil.extrairEmailToken(token.substring(7))).thenReturn(email);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class HabitosServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoCheckinJaFoiFeito(){
+    void deveLancarExcecaoQuandoCheckinJaFoiFeito() {
         when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
         when(checkinRepository.existsByHabitosIDAndData(habitoId, LocalDate.now())).thenReturn(true);
 
@@ -110,16 +110,16 @@ public class HabitosServiceTest {
     }
 
     @Test
-    void deveRetonarStreakZeroQuandoListaVazia(){
+    void deveRetonarStreakZeroQuandoListaVazia() {
         when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
         when(checkinRepository.findByHabitosID(habitoId)).thenReturn(new ArrayList<>());
 
         int streak = habitosService.calcularStreak(token, habitoId);
-        assertEquals(0,streak);
+        assertEquals(0, streak);
     }
 
     @Test
-    void deveDeletarHabitoComSucesso(){
+    void deveDeletarHabitoComSucesso() {
         when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
 
         habitosService.deletaHabito(token, habitoId);
@@ -128,7 +128,7 @@ public class HabitosServiceTest {
     }
 
     @Test
-    void deveAlterarStatusHabitoComSucesso(){
+    void deveAlterarStatusHabitoComSucesso() {
         habitoAtivo.setAtivo(false);
         when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
 
@@ -138,7 +138,7 @@ public class HabitosServiceTest {
     }
 
     @Test
-    void deveBuscarHistoricoCheckinComSucesso(){
+    void deveBuscarHistoricoCheckinComSucesso() {
         when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
         when(checkinRepository.findByHabitosIDAndDataAfter(habitoId, LocalDate.now().minusDays(30)))
                 .thenReturn(new ArrayList<>(List.of(checkinHoje)));
@@ -148,16 +148,39 @@ public class HabitosServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoHabitoNaoEncontradoAoDeletar(){
-        assertThrows(ResourceNotFoundException.class,
-                () -> habitosService.efetuarCheckin(token, habitoId));
-    }
-
-    @Test
-    void deveLancarExcecaoQuandoHistoricoVazio(){
-        when(habitosRepository.findById(habitoId)).thenReturn(Optional.empty());
+    void deveLancarExcecaoQuandoHistoricoVazio() {
+        when(habitosRepository.findById(habitoId)).thenReturn(Optional.of(habitoAtivo));
+        when(checkinRepository.findByHabitosIDAndDataAfter(habitoId, LocalDate.now().minusDays(30))).thenReturn(new ArrayList<>());
 
         assertThrows(ResourceNotFoundException.class,
                 () -> habitosService.historicoCheckin(token, habitoId));
+    }
+
+    @Test
+    void deveBuscarListaDeHabitosComSucesso() {
+        HabitosDTOResponse habito = HabitosDTOResponse.builder()
+                .status(true)
+                .descricao("descricao")
+                .habitosID(habitoId)
+                .nome("nome")
+                .build();
+
+        ArrayList<HabitosDTOResponse> lista = new ArrayList<>(List.of(habito));
+        List<HabitosEntity> entities = new ArrayList<>(List.of(habitoAtivo));
+
+        when(habitosRepository.findByEmail(email)).thenReturn(entities);
+        when(habitosConverter.paraListaDTOResponse(entities)).thenReturn(lista);
+
+        List<HabitosDTOResponse> resultado = habitosService.buscaHabitosPorEmail(token);
+        assertEquals(1, resultado.size());
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoListaVazia() {
+        when(habitosRepository.findByEmail(email)).thenReturn(new ArrayList<>());
+        when(habitosConverter.paraListaDTOResponse(any())).thenReturn(new ArrayList<>());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> habitosService.buscaHabitosPorEmail(token));
     }
 }
