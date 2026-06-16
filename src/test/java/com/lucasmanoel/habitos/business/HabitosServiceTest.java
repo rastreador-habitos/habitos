@@ -11,7 +11,7 @@ import com.lucasmanoel.habitos.infrastructure.exceptions.ResourceNotFoundExcepti
 import com.lucasmanoel.habitos.infrastructure.exceptions.UnauthorizedException;
 import com.lucasmanoel.habitos.infrastructure.repository.CheckinRepository;
 import com.lucasmanoel.habitos.infrastructure.repository.HabitosRepository;
-import com.lucasmanoel.habitos.infrastructure.security.JwtUtil;
+import com.lucasmanoel.habitos.infrastructure.security.TokenConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +48,7 @@ class HabitosServiceTest {
     HabitosUpdateConverter habitosUpdateConverter;
 
     @Mock
-    JwtUtil jwtUtil;
+    TokenConfig jwtUtil;
 
     String token = "Bearer eyJhbGciOiJIUzI1NiJ9eyJzdWIiOiJAIiwiHVR";
     String habitoId = "abc123";

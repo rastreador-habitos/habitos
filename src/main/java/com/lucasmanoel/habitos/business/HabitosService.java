@@ -12,7 +12,7 @@ import com.lucasmanoel.habitos.infrastructure.exceptions.ResourceNotFoundExcepti
 import com.lucasmanoel.habitos.infrastructure.exceptions.UnauthorizedException;
 import com.lucasmanoel.habitos.infrastructure.repository.CheckinRepository;
 import com.lucasmanoel.habitos.infrastructure.repository.HabitosRepository;
-import com.lucasmanoel.habitos.infrastructure.security.JwtUtil;
+import com.lucasmanoel.habitos.infrastructure.security.TokenConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class HabitosService {
     String idNaoencontrado = "Id não encontrado";
     String naoAutenticado = "Usuario não autenticado";
-    private final JwtUtil jwtUtil;
+    private final TokenConfig jwtUtil;
     private final HabitosConverter habitosConverter;
     private final HabitosUpdateConverter habitosUpdateConverter;
     private final HabitosRepository habitosRepository;
