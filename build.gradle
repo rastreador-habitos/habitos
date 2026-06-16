@@ -27,11 +27,6 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// JWT
-	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
-
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -42,6 +37,8 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'com.auth0:java-jwt:4.5.2'
 }
 
 tasks.named('test') {
@@ -52,6 +49,6 @@ sonarqube {
 	properties {
 		property "sonar.projectKey", "habitos"
 		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.login", "sqa_9da5ca0842451e42a1f68138372745734172c2c7"
+		property "sonar.login", "SEU_TOKEN"
 	}
 }
