@@ -14,13 +14,14 @@ import java.util.Optional;
 public class TokenConfig {
 
     @Value("${jwt.secret}")
-    private  String secretKey;
+    private String secretKey;
 
     public String extrairEmailToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         DecodedJWT decodedJWT = JWT.require(algorithm).build().verify(token);
         return decodedJWT.getSubject();
     }
+
     public Optional<JWTUserData> validateToken(String token) {
         try {
 

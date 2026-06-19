@@ -29,7 +29,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<HabitosDTORecords> cadastroHabito(@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto){
+    public ResponseEntity<HabitosDTORecords> cadastroHabito(@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body((habitosService.cadastroHabito(token, dto)));
     }
 
@@ -54,7 +54,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public void deletaHabito(@RequestHeader("Authorization") String token,@PathVariable String id){
+    public void deletaHabito(@RequestHeader("Authorization") String token, @PathVariable String id) {
         habitosService.deletaHabito(token, id);
     }
 
@@ -64,8 +64,8 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<HabitosDTORecords> alteraHabito (@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto,
-                                                           @PathVariable String id){
+    public ResponseEntity<HabitosDTORecords> alteraHabito(@RequestHeader("Authorization") String token, @Valid @RequestBody HabitosDTORecords dto,
+                                                          @PathVariable String id) {
         return ResponseEntity.ok(habitosService.alteraHabito(token, dto, id));
     }
 
@@ -75,7 +75,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<Integer> efetuarCheckin(@RequestHeader("Authorization") String token,@RequestParam String id){
+    public ResponseEntity<Integer> efetuarCheckin(@RequestHeader("Authorization") String token, @RequestParam String id) {
         return ResponseEntity.ok(habitosService.efetuarCheckin(token, id));
     }
 
@@ -85,7 +85,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<List<CheckinDTORecords>> historicoCheckin(@RequestHeader("Authorization") String token,@RequestParam String habitoId){
+    public ResponseEntity<List<CheckinDTORecords>> historicoCheckin(@RequestHeader("Authorization") String token, @RequestParam String habitoId) {
         return ResponseEntity.ok(habitosService.historicoCheckin(token, habitoId));
     }
 
@@ -95,7 +95,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<Integer> calcularStreak(@RequestHeader("Authorization") String token,@RequestParam String habitoId){
+    public ResponseEntity<Integer> calcularStreak(@RequestHeader("Authorization") String token, @RequestParam String habitoId) {
         return ResponseEntity.ok(habitosService.calcularStreak(token, habitoId));
     }
 
@@ -105,7 +105,7 @@ public class HabitosController {
     @ApiResponse(responseCode = "400", description = "Dados inválidos")
     @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<List<HabitosDTOResponse>> buscaHabitosPorEmail(@RequestHeader("Authorization") String token){
+    public ResponseEntity<List<HabitosDTOResponse>> buscaHabitosPorEmail(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(habitosService.buscaHabitosPorEmail(token));
     }
 
