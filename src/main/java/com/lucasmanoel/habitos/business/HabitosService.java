@@ -145,27 +145,12 @@ public class HabitosService {
     }
 
     public int calcularStreak(String token, String habitoId) {
-        HabitosEntity entity = habitosRepository.findById(habitoId).orElseThrow(
-                () -> new ResourceNotFoundException(idNaoencontrado)
-        );
+        HabitosEntity entity = habitosRepository.findById(habitoId)
+                .orElseThrow(() -> new ResourceNotFoundException(idNaoencontrado));
         if (!jwtUtil.extrairEmailToken(token.substring(7)).equals(entity.getEmail())) {
             throw new UnauthorizedException(naoAutenticado);
         }
-        List<CheckinEntity> buscarLista = checkinRepository.findByHabitosID(habitoId);
-        buscarLista.sort(Comparator.comparing(CheckinEntity::getData).reversed());
-
-        LocalDate dataEsperada = LocalDate.now();
-        int streak = 0;
-
-        for (CheckinEntity checkin : buscarLista) {
-            if (checkin.getData().equals(dataEsperada)) {
-                streak++;
-                dataEsperada = dataEsperada.minusDays(1);
-            } else if (checkin.getData().isBefore(dataEsperada)) {
-                break;
-            }
-        }
-        return streak;
+        return calcularStreakInterno(habitoId);
     }
 
     private int calcularStreakInterno(String habitoId) {
